@@ -1,5 +1,6 @@
 import json, requests
 todos = []
+urlAPI = "https://assets.breatheco.de/apis/fake/todos"
 
 def get_todos():
     global todos
@@ -7,22 +8,35 @@ def get_todos():
 
 def add_one_task(title):
     # your code here
-    pass
+    global todos
+    data = {
+        "label" : title,
+        "done" : False
+    }
+    todos.append(data)
+    return "agregaste la tarea"
 
 def print_list():
     # your code here
-    pass
+    global todos
+    for item in todos:
+        print(item)
 
 def delete_task(number_to_delete):
     # your code here
-    pass
+    number_to_delete = int(number_to_delete) - 1
+    todos.pop(number_to_delete)
+    return todos
 
 def initialize_todos():
     global todos
-    r = requests.get('https://assets.breatheco.de/apis/fake/todos/user/alesanchezr') 
+    headers = {
+    'Content-Type':'application/json'
+    }
+    r = requests.get('https://assets.breatheco.de/apis/fake/todos/user/manuel04') 
     if(r.status_code == 404):
         print("No previous todos found, starting a new todolist")
-        r = requests.post(url = 'https://assets.breatheco.de/apis/fake/todos/user/alesanchezr', data = []) 
+        r = requests.post(url = 'https://assets.breatheco.de/apis/fake/todos/user/manuel04', headers=headers, data = json.dumps([]))
         if r.status_code == 200:
             print("Tasks initialized successfully")
     else:
@@ -32,11 +46,26 @@ def initialize_todos():
     
 def save_todos():
     # your code here
-    pass
+    global todos
+    headers = {
+    'Content-Type':'application/json'
+    }
+    req = requests.put(urlAPI + "/user/manuel04", headers=headers, data=json.dumps(todos))
+
+    print(req.json())
 
 def load_todos():
     # your code here
-    pass
+    global todos
+    headers = {
+    'Content-Type':'application/json'
+    }
+    req = requests.get(urlAPI + "/user/manuel04", headers=headers)
+
+    if req.status_code == 200:
+        todos = req.json()
+    else:
+        print(req.json())
     
 # Below this code will only run if the entry file running was app.py
 if __name__ == '__main__':
